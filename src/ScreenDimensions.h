@@ -9,6 +9,7 @@ namespace ScreenDimensions
 	float GetScreenWidth();
 	float GetScreenHeight();
 	void ReloadScreenDimensions();
+	bool ToggleDefaultDimensions(bool);	
 };
 
 #define SCREEN_WIDTH	ScreenDimensions::GetScreenWidth()

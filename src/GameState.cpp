@@ -184,6 +184,7 @@ GameState::GameState() :
 		lua_settable( L, LUA_GLOBALSINDEX );
 		LUA->Release( L );
 	}
+	m_bMod = false;
 }
 
 GameState::~GameState()
@@ -367,6 +368,8 @@ void GameState::Reset()
 	m_bBackedOutOfFinalStage = false;
 	m_bEarnedExtraStage = false;
 	sExpandedSectionName = "";
+
+	m_bMod = false;
 
 	ApplyCmdline();
 }

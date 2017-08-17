@@ -509,7 +509,7 @@ bool ScreenSelectMusic::Input( const InputEventPlus &input )
 
 	if( !input.GameI.IsValid() )
 		return false; // don't care
-
+/*
 	// Handle late joining
 	// If the other player is allowed to join on the extra stage, then the
 	// summary screen will crash on invalid stage stats. -Kyz
@@ -519,7 +519,7 @@ bool ScreenSelectMusic::Input( const InputEventPlus &input )
 	{
 		return true; // don't handle this press again below
 	}
-
+*/
 	if( !GAMESTATE->IsHumanPlayer(input.pn) )
 		return false;
 

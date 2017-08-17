@@ -72,6 +72,11 @@ bool ScreenTitleMenu::Input( const InputEventPlus &input )
 			SCREENMAN->SetNewScreen( m_sName );
 			bHandled = true;
 		}
+		if (CodeDetector::EnteredCode(input.GameI.controller, CODE_NEXT_SORT1) ||
+			CodeDetector::EnteredCode(input.GameI.controller, CODE_NEXT_SORT3))
+		{
+			GAMESTATE->m_bMod = true;
+		}
 	}
 
 	return ScreenSelectMaster::Input( input ) || bHandled;

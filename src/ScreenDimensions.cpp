@@ -7,7 +7,7 @@
 
 static ThemeMetric<float> THEME_SCREEN_WIDTH("Common","ScreenWidth");
 static ThemeMetric<float> THEME_SCREEN_HEIGHT("Common","ScreenHeight");
-
+bool m_ForceDefault=false;
 /* The theme's logical resolution specifies the minimum screen width and
  * the minimum screen height with a 4:3 aspect ratio. Scale just one 
  * of the dimensions up to meet the requested aspect ratio. */
@@ -32,6 +32,12 @@ float ScreenDimensions::GetScreenWidth()
 {
 	float fAspect = PREFSMAN->m_fDisplayAspectRatio;
 	float fScale = 1;
+	if (m_ForceDefault)
+	{
+		int width = GetScreenHeight()*fAspect;
+		width -= width % 2;
+		return (float)width;
+	}		
 	if( fAspect > THEME_NATIVE_ASPECT )
 		fScale = fAspect / THEME_NATIVE_ASPECT;
 	ASSERT( fScale >= 1 );
@@ -44,6 +50,8 @@ float ScreenDimensions::GetScreenWidth()
 
 float ScreenDimensions::GetScreenHeight()
 {
+	if (m_ForceDefault)
+		return 480;
 	float fAspect = PREFSMAN->m_fDisplayAspectRatio;
 	float fScale = 1;
 	if( fAspect < THEME_NATIVE_ASPECT )
@@ -70,9 +78,17 @@ void ScreenDimensions::ReloadScreenDimensions()
 	LUA->SetGlobal( "ASPECT_SCALE_FACTOR", (int) ASPECT_SCALE_FACTOR );
 }
 
+bool ScreenDimensions::ToggleDefaultDimensions(bool flag)
+{
+	m_ForceDefault = flag;
+	ReloadScreenDimensions();
+	return true;
+}
+
 LuaFunction( GetScreenAspectRatio,	PREFSMAN->m_fDisplayAspectRatio );
 LuaFunction( GetThemeAspectRatio,	ScreenDimensions::GetThemeAspectRatio() );
 
+LuaFunction( ToggleDefaultDimensions, ScreenDimensions::ToggleDefaultDimensions(BArg(1)));
 
 /*
  * (c) 2001-2002 Chris Danford

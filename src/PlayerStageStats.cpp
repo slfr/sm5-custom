@@ -178,63 +178,41 @@ Grade GetGradeFromPercent( float fPercent )
 
 Grade PlayerStageStats::GetGrade() const
 {
-	if( m_bFailed )
-		return Grade_Failed;
+	Grade grade = Grade_Failed;
 
-	/* XXX: This entire calculation should be in ScoreKeeper, but final evaluation
-	 * is tricky since at that point the ScoreKeepers no longer exist. */
-	float fActual = 0;
+	if (m_bFailed)
+		return grade;
+	
+	int iGradeScore[NUM_Grade] = { 0 };
+	iGradeScore[Grade_Tier01] = 1000000;
+	iGradeScore[Grade_Tier02] = 990000;	//AAA
+	iGradeScore[Grade_Tier03] = 950000;	//AA+
+	iGradeScore[Grade_Tier04] = 900000;	//AA
+	iGradeScore[Grade_Tier05] = 890000;	//AA-
+	iGradeScore[Grade_Tier06] = 850000;	//A+
+	iGradeScore[Grade_Tier07] = 800000;	//A
+	iGradeScore[Grade_Tier08] = 790000;	//A-
+	iGradeScore[Grade_Tier09] = 750000;	//B+
+	iGradeScore[Grade_Tier10] = 700000;	//B
+	iGradeScore[Grade_Tier11] = 690000;	//B-
+	iGradeScore[Grade_Tier12] = 650000;	//C+
+	iGradeScore[Grade_Tier13] = 600000;	//C
+	iGradeScore[Grade_Tier14] = 590000;	//C-
+	iGradeScore[Grade_Tier15] = 550000;	//D+ (0~549999=D)
 
-	bool bIsBeginner = false;
-	if( m_iStepsPlayed > 0 && !GAMESTATE->IsCourseMode() )
-		bIsBeginner = m_vpPossibleSteps[0]->GetDifficulty() == Difficulty_Beginner;
-
-	FOREACH_ENUM( TapNoteScore, tns )
+	int score = m_iScore;
+	if (!GAMESTATE->IsCourseMode() && m_vpPossibleSteps.size()>1)	// we are in summary.
 	{
-		int iTapScoreValue = ScoreKeeperNormal::TapNoteScoreToGradePoints( tns, bIsBeginner );
-		fActual += m_iTapNoteScores[tns] * iTapScoreValue;
-		//LOG->Trace( "GetGrade actual: %i * %i", m_iTapNoteScores[tns], iTapScoreValue );
+		score = score / m_vpPossibleSteps.size();
 	}
 
-	FOREACH_ENUM( HoldNoteScore, hns )
+	FOREACH_ENUM(Grade, g)
 	{
-		int iHoldScoreValue = ScoreKeeperNormal::HoldNoteScoreToGradePoints( hns, bIsBeginner );
-		fActual += m_iHoldNoteScores[hns] * iHoldScoreValue;
-		//LOG->Trace( "GetGrade actual: %i * %i", m_iHoldNoteScores[hns], iHoldScoreValue );
-	}
-
-	//LOG->Trace( "GetGrade: fActual: %f, fPossible: %d", fActual, m_iPossibleGradePoints );
-
-	float fPercent = (m_iPossibleGradePoints == 0) ? 0 : fActual / m_iPossibleGradePoints;
-
-	Grade grade = GetGradeFromPercent( fPercent );
-
-	//LOG->Trace( "GetGrade: Grade: %s, %i", GradeToString(grade).c_str(), GRADE_TIER02_IS_ALL_W2S );
-
-	// TODO: Change these conditions to use Lua instead. -aj
-	if( GRADE_TIER02_IS_ALL_W2S )
-	{
-		if( FullComboOfScore(TNS_W1) )
-			return Grade_Tier01;
-
-		if( FullComboOfScore(TNS_W2) )
-			return Grade_Tier02;
-
-		grade = max( grade, Grade_Tier03 );
-	}
-
-	if( GRADE_TIER01_IS_ALL_W2S )
-	{
-		if( FullComboOfScore(TNS_W2) )
-			return Grade_Tier01;
-		grade = max( grade, Grade_Tier02 );
-	}
-
-	if( GRADE_TIER02_IS_FULL_COMBO )
-	{
-		if( FullComboOfScore(g_MinScoreToMaintainCombo) )
-			return Grade_Tier02;
-		grade = max( grade, Grade_Tier03 );
+		if (score >= iGradeScore[g])
+		{
+			grade = g;
+			break;
+		}
 	}
 
 	return grade;

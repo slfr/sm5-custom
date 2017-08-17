@@ -1023,6 +1023,12 @@ void MusicWheel::FilterWheelItemDatas(vector<MusicWheelItemData *> &aUnFilteredD
 				aiRemove[i] = true;
 				continue;
 			}
+
+			if (SONGMAN->WasLoadedFromAdditionalSongs(pSong) && !GAMESTATE->m_bMod)
+			{
+				aiRemove[i] = true;
+				continue;
+			}
 		}
 
 		if( WID.m_Type == WheelItemDataType_Course )

@@ -35,6 +35,11 @@ class ScoreKeeperNormal: public ScoreKeeper
 
 	int	m_iNumNotesHitThisRow;	// Used by Custom Scoring only
 
+	int m_iWeighted;
+	int m_iTotalPossibleVirtualScore;
+	int m_iVirtualScore;
+	int m_iMinusScore;
+
 	ThemeMetric<bool>		m_ComboIsPerRow;
 	ThemeMetric<bool>		m_MissComboIsPerRow;
 	ThemeMetric<TapNoteScore>	m_MinScoreToContinueCombo;
@@ -78,10 +83,12 @@ public:
 
 	// This must be calculated using only cached radar values so that we can 
 	// do it quickly.
-	static int GetPossibleDancePoints( NoteData* nd, const TimingData* td, float fSongSeconds );
-	static int GetPossibleDancePoints( NoteData* ndPre, NoteData* ndPost, const TimingData* td, float fSongSeconds );
+	static int GetPossibleDancePoints( NoteData* nd, const TimingData* td, float fSongSeconds);
+	static int GetPossibleDancePoints( NoteData* ndPre, NoteData* ndPost, const TimingData* td, float fSongSeconds);
 	static int GetPossibleGradePoints( NoteData* nd, const TimingData* td, float fSongSeconds );
 	static int GetPossibleGradePoints( NoteData* ndPre, NoteData* ndPost, const TimingData* td, float fSongSeconds );
+	static int GetPossibleVirtualScore(NoteData* nd, const TimingData* td, float fSongSeconds, int weighted);
+	static int GetPossibleVirtualScore(NoteData* ndPre, NoteData* ndPost, const TimingData* td, float fSongSeconds, int weighted);
 
 	int TapNoteScoreToDancePoints( TapNoteScore tns ) const;
 	int HoldNoteScoreToDancePoints( HoldNoteScore hns ) const;

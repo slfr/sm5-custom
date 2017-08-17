@@ -95,6 +95,9 @@ public:
 	// Only used if the Game specifies that styles are separate.
 	Style const* m_SeparatedStyles[NUM_PlayerNumber];
 	public:
+	
+		bool m_bMod;
+
 	/** @brief Determine which side is joined.
 	 *
 	 * The left side is player 1, and the right side is player 2. */
